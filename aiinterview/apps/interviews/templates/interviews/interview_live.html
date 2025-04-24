@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Platform</title>
+    <style>
+        .output {
+          white-space: pre-wrap;
+          border-right: 2px solid black;
+          animation: blink-caret 0.75s step-end infinite;
+        }
+        .split-layout {
+            display: flex;
+            height: 100vh; /* Full screen height */
+          }
+          
+          .left-panel,
+          .right-panel {
+            width: 50%;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: auto;
+          }
+
+          #question-box {
+            font-weight: bold;
+          }
+          
+          .left-panel {
+            background-color: #f4f4f4;
+            border-right: 1px solid #ccc;
+          }
+          
+          .right-panel {
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+          }
+
+        @keyframes blink-caret {
+          from, to { border-color: transparent; }
+          50% { border-color: black; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Interview Live ({{ interview.status }})</h1>
+    <h2>Job: {{ job.name }}</h2>
+    <p><b>Job Description: </b> {{ job.description }}</p>
+
+    <h2>Candidate: {{ candidate.username }}</h2>
+    <div id="session-id" data-session-id="{{ interview_session.slug }}"></div>
+    <div id="controls-id">
+        {% if interview.status == 'scheduled' %}
+        <button id="btn-start">Start</button>
+        {% else %}
+        <button id="btn-start" disabled>Start</button>
+        {% endif %}
+
+        {% if interview.status == 'in_progress' %}
+        <button id="btn-cancel">Cancel</button>
+        {% else %}
+        <button id="btn-cancel" disabled>Cancel</button>
+        {% endif %}
+    </div>
+    <p style="color: red;" id="note-id"></p>
+
+    <div class="split-layout">
+        <div class="left-panel">
+            <div id="question-container">
+                <div id="question-box">
+                
+                </div>
+                <ul id="previous-questions">
+                    {% for question in questions  %}
+                        <li>
+                            {{ forloop.counter }}. {{ question.question_text }}
+                            <ul>
+                                {% if question.interviewanswer_set.first %}
+                                <li>Your answer: ({{ question.interviewanswer_set.first.status }}) {{ question.interviewanswer_set.first.transcript_text }} </li>
+                                {% else %}
+                                <li>Your answer: Chưa trả lời </li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <h2>Summary</h2>
+            <h3>CV summary</h3>
+            <ul>
+                <li><b>education:</b> 0</li>
+                <li><b>skills:</b> 0</li>
+                <li><b>experience:</b> 0</li>
+                <li><b>overall:</b> 0</li>
+            </ul>
+            <h3>Interview summary</h3>
+            <ul>
+                <li><b>communication:</b> 0</li>
+                <li><b>challenge:</b> 0</li>
+                <li><b>appearance:</b> 0</li>
+                <li><b>facial:</b> 0</li>
+                <li><b>body_language:</b> 0</li>
+                <li><b>environment:</b> 0</li>
+                <li><b>overall:</b> 0</li>
+                <li><b>summary_feedback</b> A</li>
+            </ul>
+        </div>
+      
+        <div class="right-panel">
+            <video id="preview" autoplay muted playsinline></video>
+        </div>
+      </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
