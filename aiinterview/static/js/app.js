@@ -10,6 +10,7 @@ $(document).ready(function () {
     $("#btn-start").click(function() {
         console.log("Start Interview")
         socket.send(JSON.stringify({ type: "start_interview" }));
+        liveStream()
     })
     $("#btn-cancel").click(function() {
         console.log("Cancel Interview")
@@ -46,6 +47,8 @@ $(document).ready(function () {
                 liveStream()
                 $("#note-id").text(`Hãy trả lời câu hỏi dưới đây`)
                 typeText("#question-box", data.message.next_interview_question.question_text);
+            } else if (data.message.status == "scheduled") {
+                $("#note-id").text(`Click start để băt đầu buổi phỏng vấn`)
             }
         }
 
@@ -59,6 +62,7 @@ $(document).ready(function () {
                 $("#note-id").text(`Bạn chưa trả lời câu hỏi số ${data.message.unanswered_question.question_id}`)
             } else if (data.message.next_interview_question) {
                 $("#note-id").text(`Hãy trả lời câu hỏi dưới đây`)
+                typeText("#question-box", data.message.next_interview_question.question_text);
             }
         }
         if (data.type == "cancel_interview") {

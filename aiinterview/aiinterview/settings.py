@@ -151,7 +151,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
 JAN_API_URL = 'http://localhost:1337/v1/chat/completions'
-OPENAI_KEY = '5d44a3c804e745dcb84f4d299861d50c'
+OPENAI_KEY = '9b0b180c4d9e47f894331725f5babd74'
 
 CHANNEL_LAYERS = {
     'default': {

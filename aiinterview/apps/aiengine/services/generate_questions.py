@@ -97,9 +97,9 @@ def generate_questions(interview):
             "role": "system",
             "content": prompt.system_message,
         })
-    # response = openai_chat(messages)
-    # return json.loads(response)
-    return {
-        "question": "haa",
-        "type": "tech",
-    }
+    response = openai_chat(messages)
+    return json.loads(response)
+    # return {
+        # "question": "haa",
+        # "type": "tech",
+    # }

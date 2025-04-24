@@ -31,8 +31,10 @@ class Job(Timestampable, SlugableUnique):
 
     def get_share_link(self):
         current_site = Site.objects.get_current()
-        path = reverse("job_interview_join", kwargs={"slug": self.slug})
-        return f"http://{current_site.domain}{path}"
+        if self.slug:
+            path = reverse("job_interview_join", kwargs={"slug": self.slug})
+            return f"http://{current_site.domain}{path}"
+        return None
 
 
 class JobInterviewConfig(Timestampable):
