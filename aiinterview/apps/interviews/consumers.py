@@ -1,6 +1,5 @@
 import asyncio
 from faster_whisper import WhisperModel
-# import whisper
 import aiofiles
 from django.core.files import File
 from django.conf import settings
@@ -17,8 +16,7 @@ from apps.aiengine.services.transcript import transcribe
 from apps.jobs.models import JobInterviewConfig
 from .constants import InterviewSessionStatusChoices, InterviewStatusChoices, InterviewAnswerStatusChoices
 
-# model = whisper.load_model("turbo")
-fw_model = WhisperModel("base", compute_type="float32")
+fw_model = WhisperModel("base", device="auto", compute_type="float32")
 
 class InterviewConsumer(AsyncWebsocketConsumer):
 
