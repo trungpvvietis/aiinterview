@@ -25,12 +25,17 @@
           }
 
           #question-box {
+            display: block;
             font-weight: bold;
           }
-          
           .left-panel {
             background-color: #f4f4f4;
             border-right: 1px solid #ccc;
+          }
+
+          #answer-box {
+            display: block;
+            margin-top: 10px;
           }
           
           .right-panel {
@@ -54,7 +59,7 @@
     <h2>Candidate: {{ candidate.username }}</h2>
     <div id="session-id" data-session-id="{{ interview_session.slug }}"></div>
     <div id="controls-id">
-        {% if interview.status == 'scheduled' %}
+        {% if interview.status == 'scheduled' and not questions %}
         <button id="btn-start">Start</button>
         {% else %}
         <button id="btn-start" disabled>Start</button>
@@ -72,6 +77,9 @@
         <div class="left-panel">
             <div id="question-container">
                 <div id="question-box">
+                
+                </div>
+                <div id="answer-box">
                 
                 </div>
                 <ul id="previous-questions">
@@ -92,21 +100,21 @@
             <h2>Summary</h2>
             <h3>CV summary</h3>
             <ul>
-                <li><b>education:</b> 0</li>
-                <li><b>skills:</b> 0</li>
-                <li><b>experience:</b> 0</li>
-                <li><b>overall:</b> 0</li>
+                <li><b>education:</b> {{ scoring_resume_job.education_score }}</li>
+                <li><b>skills:</b> {{ scoring_resume_job.skills_score }}</li>
+                <li><b>experience:</b> {{ scoring_resume_job.experience_score }}</li>
+                <li><b>overall:</b> {{ scoring_resume_job.overall_cv_score }}</li>
             </ul>
             <h3>Interview summary</h3>
             <ul>
-                <li><b>communication:</b> 0</li>
-                <li><b>challenge:</b> 0</li>
-                <li><b>appearance:</b> 0</li>
-                <li><b>facial:</b> 0</li>
-                <li><b>body_language:</b> 0</li>
-                <li><b>environment:</b> 0</li>
-                <li><b>overall:</b> 0</li>
-                <li><b>summary_feedback</b> A</li>
+                <li><b>communication:</b> <span id="communication-id">{{ scoring_interview.communication_score }}</span></li>
+                <li><b>challenge:</b> <span id="challenge-id">{{ scoring_interview.challenge_score }}</span></li>
+                <li><b>appearance:</b> <span id="appearance-id">{{ scoring_interview.appearance_score }}</span></li>
+                <li><b>facial:</b> <span id="facial-id">{{ scoring_interview.facial_score }}</span></li>
+                <li><b>body_language:</b> <span id="body_language-id">{{ scoring_interview.body_language_score }}</span></li>
+                <li><b>environment:</b> <span id="environment-id">{{ scoring_interview.environment_score }}</span></li>
+                <li><b>overall:</b> <span id="overall-id">{{ scoring_interview.overall_score }}</span></li>
+                <li><b id="summary_feedback-id">summary_feedback</b> A</li>
             </ul>
         </div>
       
@@ -114,7 +122,7 @@
             <video id="preview" autoplay muted playsinline></video>
         </div>
       </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
     <script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>

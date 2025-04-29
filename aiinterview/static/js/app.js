@@ -11,10 +11,12 @@ $(document).ready(function () {
         console.log("Start Interview")
         socket.send(JSON.stringify({ type: "start_interview" }));
         liveStream()
+        $(this).prop('disabled', true);
     })
     $("#btn-cancel").click(function() {
         console.log("Cancel Interview")
         socket.send(JSON.stringify({ type: "cancel_interview" }));
+        $(this).prop('disabled', true);
     })
     // navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
     //     const mediaRecorder = new MediaRecorder(stream, {
@@ -36,6 +38,34 @@ $(document).ready(function () {
     socket.onmessage = function (event) {
         const data = JSON.parse(event.data);
         console.log("Received data:", data);
+        if (data.type == "is_answer_done") {
+            console.log("is_answer_done", data)
+            $("#note-id").text(`Cảm ơn câu trả lời của bạn! Hãy chuẩn bị trả lời cho cẩu hỏi tiếp theo...`)
+        }
+        if (data.type == "interview_completed") {
+            console.log("interview_completed", data)
+            $("#answer-box").text("");
+            $("#question-box").text("");
+            $("#note-id").text(`Buổi phỏng vấn đã kết thúc, xin cảm ơn bạn đã dành thời gian cho chúng tôi!`)
+
+            $("#communication-id").text(data.message.communication_score);
+            $("#challenge-id").text(data.message.challenge_score);
+            $("#appearance-id").text(data.message.appearance_score);
+            $("#facial-id").text(data.message.facial_score);
+            $("#body_language-id").text(data.message.body_language_score);
+            $("#environment-id").text(data.message.environment_score);
+            $("#overall-id").text(data.message.overall_score);
+
+        }
+        if (data.type == "next_question") {
+            $("#answer-box").text("");
+            $("#note-id").text(`Hãy trả lời câu hỏi tiếp theo dưới đây!`)
+            if (data.message.next_interview_question != undefined) {
+                typeText("#question-box", data.message.next_interview_question.question_text);
+            } else {
+                typeText("#question-box", data.message.unanswered_question.question_text);
+            }
+        }
 
         if (data.type === "connect") {
             if (data.message.status != "scheduled" && data.message.status != "in_progress") {
@@ -67,6 +97,15 @@ $(document).ready(function () {
         }
         if (data.type == "cancel_interview") {
             $("#note-id").text(data.message)
+        }
+
+        if (data.type == "chunk_answer_transcript") {
+            console.log("CHUNK")
+            typeText("#answer-box", data.message.answer_text);
+        }
+        if (data.type == "full_answer_transcript") {
+            console.log("FULL")
+            typeText("#answer-box", data.message.answer_text);
         }
     };
 
@@ -105,18 +144,29 @@ $(document).ready(function () {
     }
 
     // Render interview questions
-    function typeText(selector, text, speed = 40) {
+    function typeText(selector, text, speed = 20) {
         const el = $(selector);
-        el.empty();
-    
+        
         let i = 0;
+    
+        // Create cursor if not exists
+        let cursor = $('<span class="typing-cursor">|</span>');
+        if (el.find('.typing-cursor').length === 0) {
+            el.append(cursor);
+        } else {
+            cursor = el.find('.typing-cursor');
+        }
+    
         function typeChar() {
             if (i < text.length) {
-                el.append(text.charAt(i));
+                cursor.before(text.charAt(i));
                 i++;
                 setTimeout(typeChar, speed);
+            } else {
+                cursor.remove(); // Remove cursor after done
             }
         }
+    
         typeChar();
     }
 });

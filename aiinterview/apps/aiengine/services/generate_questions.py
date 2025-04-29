@@ -1,10 +1,11 @@
-import json
+from faker import Faker
 from apps.aiengine.clients.openai import chat as openai_chat
 from apps.aiengine.models import Prompt
 from channels.db import database_sync_to_async
 from apps.aiengine.constants import PromptTypeChoices
 import logging
 
+fake = Faker()
 logger = logging.getLogger(__name__)
 
 async def async_generate_questions(interview):
@@ -97,9 +98,9 @@ def generate_questions(interview):
             "role": "system",
             "content": prompt.system_message,
         })
-    response = openai_chat(messages)
-    return json.loads(response)
-    # return {
-        # "question": "haa",
-        # "type": "tech",
-    # }
+    # response = openai_chat(messages)
+    # return json.loads(response)
+    return {
+        "question": fake.sentence(),
+        "type": "tech",
+    }
